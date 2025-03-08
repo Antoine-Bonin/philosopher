@@ -2,13 +2,13 @@
 
 NAME = philo
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -pthread
 
 SRCS = main.c \
-		#philo.c \
-		utils.c
+		utils.c \
+		thread.c
 
 OBJS = $(SRCS:.c=.o)
 
