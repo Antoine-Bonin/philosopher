@@ -8,7 +8,8 @@ LDFLAGS = -pthread
 
 SRCS = main.c \
 		utils.c \
-		thread.c
+		thread.c \
+		monitor_thread.c
 
 OBJS = $(SRCS:.c=.o)
 

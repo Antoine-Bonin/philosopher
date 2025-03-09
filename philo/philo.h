@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/08 18:46:12 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/09 18:17:16 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int					is_digit(char **av);
 int					ft_atoi(char *str);
 void				*philo_routine(void *arg);
 int					get_current_time(void);
+void				monitor(t_philo *philo);
 
 /*****************************************************/
 
