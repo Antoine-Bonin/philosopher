@@ -5,35 +5,44 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/09 18:12:02 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/09 18:20:55 by antbonin         ###   ########.fr       */
+/*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
+/*   Updated: 2025/03/11 17:56:32 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void monitor(t_data *data)
+void	*monitor_routine(void *arg)
 {
-    int i;
-    int j;
-    int time;
-    t_philo *philo;
+	t_data	*data;
+	int		i;
+	long	current_time;
 
-    philo = data->philos;
-    while (1)
-    {
-        i = 0;
-        while (i < data->nb_philo)
-        {
-            time = get_current_time();
-            if (time - philo[i].last_meal > data->time_to_eat)
-            {
-                pthread_mutex_lock(&data->is_dead);
-                printf("%d %d died\n", time, philo[i].id);
-                pthread_mutex_unlock(&data->is_dead);
-                return ;
-            }
-            i++;
-        }
-    }
+	data = (t_data *)arg;
+	while (!should_stop(data))
+	{
+		i = 0;
+		while (i < data->nb_philo && !data->stop)
+		{
+			current_time = get_current_time();
+			pthread_mutex_lock(&data->update);
+			if ((current_time - data->philos[i].last_meal > data->time_to_die)
+				|| (data->nb_meal >= data->nb_eat && data->nb_eat != 0))
+			{
+				pthread_mutex_unlock(&data->update);
+				pthread_mutex_lock(&data->is_dead);
+				data->stop = 1;
+				pthread_mutex_unlock(&data->is_dead);
+				pthread_mutex_lock(&data->print_mutex);
+				printf("%ld %d died\n", current_time - data->start_time,
+					data->philos[i].id + 1);
+				pthread_mutex_unlock(&data->print_mutex);
+				return (NULL);
+			}
+			pthread_mutex_unlock(&data->update);
+			i++;
+		}
+		usleep(1000);
+	}
+	return (NULL);
 }

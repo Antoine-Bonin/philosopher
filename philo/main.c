@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/08 18:54:26 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/11 17:53:25 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ int	init_data_arg(t_data *data, int ac, char **av)
 	if (is_digit(av) == 1)
 		return (1);
 	data->nb_philo = ft_atoi(av[1]);
-	data->time_to_eat = ft_atoi(av[2]);
-	data->time_to_sleep = ft_atoi(av[3]);
-	data->time_to_think = ft_atoi(av[4]);
+	data->time_to_die = ft_atoi(av[2]);
+	data->time_to_eat = ft_atoi(av[3]);
+	data->time_to_sleep = ft_atoi(av[4]);
 	if (data->nb_philo < 1 || data->time_to_eat < 1 || data->time_to_sleep < 1
-		|| data->time_to_think < 1)
+		|| data->time_to_die < 1)
 		return (1);
 	if (ac == 6)
 	{
@@ -53,6 +53,8 @@ int	init_mutex(t_data *data)
 		return (1);
 	else
 		data->mutex_init = 2;
+	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
+		return (1);
 	return (0);
 }
 
@@ -63,10 +65,11 @@ void	init_philos(t_data *data)
 	data->start_time = get_current_time();
 	data->stop = 0;
 	data->waiting_last = 0;
+	data->nb_meal = 0;
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		data->philos[i].id = i + 1;
+		data->philos[i].id = i;
 		data->philos[i].r_fork = &data->forks[i];
 		data->philos[i].l_fork = &data->forks[(i + 1) % data->nb_philo];
 		data->philos[i].data = data;
@@ -91,15 +94,21 @@ int	init_data(t_data *data)
 	i = 0;
 	if (init_mutex(data))
 		return (1);
-	init_philos(data);  
+	init_philos(data);
 	while (i < data->nb_philo)
 	{
 		pthread_create(&data->philos[i].thread, NULL, philo_routine,
 			(void *)&data->philos[i]);
 		i++;
 	}
-	pthread_create(&data->monitor_thread, NULL, monitor, (void *)data);
+	pthread_create(&data->monitor_thread, NULL, monitor_routine, (void *)data);
+	pthread_join(data->monitor_thread, NULL);
 	i = 0;
+	while (i < data->nb_philo)
+	{
+		pthread_join(data->philos[i].thread, NULL);
+		i++;
+	}
 	return (0);
 }
 
@@ -128,6 +137,6 @@ int	main(int ac, char **av)
 		free(data);
 		return (1);
 	}
-	free(data);
+	cleanup(data);
 	return (0);
 }
