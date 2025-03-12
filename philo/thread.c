@@ -6,11 +6,13 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:18:27 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/11 18:00:10 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/12 18:45:58 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print_message(t_data *data, int id, char *msg);
 
 void	cleanup(t_data *data)
 {
@@ -26,23 +28,18 @@ void	cleanup(t_data *data)
 		pthread_mutex_destroy(&data->update);
 	if (data->mutex_init == 2)
 		pthread_mutex_destroy(&data->is_dead);
-	pthread_mutex_destroy(&data->print_mutex);
+	if (data->mutex_init == 3)
+		pthread_mutex_destroy(&data->print_mutex);
 	free(data->philos);
 	free(data->forks);
 	free(data);
 }
 
-void print_message(t_data *data, int id, char *msg)
-{
-    if (should_stop(data))
-        return;
-    pthread_mutex_lock(&data->print_mutex);
-    printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
-    pthread_mutex_unlock(&data->print_mutex);
-}
 
 void	forks_lock(t_philo *philo)
 {
+	if(should_stop(philo->data))
+		return ;
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->l_fork);
@@ -73,6 +70,14 @@ int	should_stop(t_data *data)
 	return (stop);
 }
 
+void	print_message(t_data *data, int id, char *msg)
+{
+	if (should_stop(data))
+		return ;
+	pthread_mutex_lock(&data->print_mutex);
+	printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
+	pthread_mutex_unlock(&data->print_mutex);
+}
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;

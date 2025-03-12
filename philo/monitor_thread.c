@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/12 11:53:06 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/12 18:46:44 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,11 @@ void	*monitor_routine(void *arg)
 				pthread_mutex_unlock(&data->print_mutex);
 				return (NULL);
 			}
-			else if (data->nb_eat != 0 && data->nb_meal >= data->nb_eat)
+			else if (data->nb_eat != -1 && data->nb_meal >= data->nb_eat)
 			{
-				pthread_mutex_unlock(&data->update);
-				usleep(10);
 				pthread_mutex_lock(&data->is_dead);
 				data->stop = 1;
 				pthread_mutex_unlock(&data->is_dead);
-				pthread_mutex_lock(&data->print_mutex);
-				printf("%ld all philos ate\n", current_time - data->start_time);
-				pthread_mutex_unlock(&data->print_mutex);
 				return (NULL);
 			}
 			pthread_mutex_unlock(&data->update);

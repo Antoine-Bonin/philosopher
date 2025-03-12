@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/11 17:53:25 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/12 18:28:26 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	init_data_arg(t_data *data, int ac, char **av)
 			return (1);
 	}
 	else
-		data->nb_eat = 0;
+		data->nb_eat = -1;
 	return (0);
 }
 
@@ -55,6 +55,8 @@ int	init_mutex(t_data *data)
 		data->mutex_init = 2;
 	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
 		return (1);
+	else
+		data->mutex_init = 3;
 	return (0);
 }
 
@@ -127,9 +129,9 @@ int	main(int ac, char **av)
 	}
 	if (init_data_arg(data, ac, av))
 	{
-		printf("Error: wrong arguments\n");
-		free(data);
-		return (1);
+		if (data->nb_philo != 1)
+			printf("Error: wrong arguments\n");
+		return (free(data), 1);
 	}
 	if (init_data(data))
 	{
