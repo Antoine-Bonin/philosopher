@@ -6,13 +6,11 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:18:27 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/12 18:45:58 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/20 22:54:58 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	print_message(t_data *data, int id, char *msg);
 
 void	cleanup(t_data *data)
 {
@@ -35,10 +33,9 @@ void	cleanup(t_data *data)
 	free(data);
 }
 
-
 void	forks_lock(t_philo *philo)
 {
-	if(should_stop(philo->data))
+	if (should_stop(philo->data))
 		return ;
 	if (philo->id % 2 == 0)
 	{
@@ -55,11 +52,13 @@ void	forks_lock(t_philo *philo)
 		print_message(philo->data, philo->id, FORK);
 	}
 }
+
 void	forks_unlock(t_philo *philo)
 {
 	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(philo->l_fork);
 }
+
 int	should_stop(t_data *data)
 {
 	int	stop;
@@ -70,21 +69,8 @@ int	should_stop(t_data *data)
 	return (stop);
 }
 
-void	print_message(t_data *data, int id, char *msg)
+void	handle_routine(t_data *data, t_philo *philo)
 {
-	if (should_stop(data))
-		return ;
-	pthread_mutex_lock(&data->print_mutex);
-	printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
-	pthread_mutex_unlock(&data->print_mutex);
-}
-void	*philo_routine(void *arg)
-{
-	t_philo	*philo;
-	t_data	*data;
-
-	philo = (t_philo *)arg;
-	data = philo->data;
 	while (!should_stop(data))
 	{
 		forks_lock(philo);
@@ -96,15 +82,25 @@ void	*philo_routine(void *arg)
 		usleep(data->time_to_eat * 1000);
 		forks_unlock(philo);
 		philo->is_eating = 0;
-		philo->meal_eat++;
 		if (should_stop(data))
 			break ;
 		print_message(data, philo->id, SLEEP);
 		usleep(data->time_to_sleep * 1000);
 		print_message(data, philo->id, THINK);
 		pthread_mutex_lock(&data->update);
-		data->nb_meal++;
+		philo->meal_eat++;
 		pthread_mutex_unlock(&data->update);
 	}
+	return ;
+}
+
+void	*philo_routine(void *arg)
+{
+	t_philo	*philo;
+	t_data	*data;
+
+	philo = (t_philo *)arg;
+	data = philo->data;
+	handle_routine(data, philo);
 	return (NULL);
 }

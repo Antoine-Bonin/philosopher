@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/08 18:20:51 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/20 19:46:34 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,13 @@ int	get_current_time(void)
 
 	gettimeofday(&time, NULL);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+void	print_message(t_data *data, int id, char *msg)
+{
+	if (should_stop(data))
+		return ;
+	pthread_mutex_lock(&data->print_mutex);
+	printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
+	pthread_mutex_unlock(&data->print_mutex);
 }

@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/11 17:07:20 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/20 23:17:26 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ typedef struct s_data
 	int				time_to_sleep;
 	int				time_to_die;
 	int				nb_eat;
-	int				nb_meal;
 	long			start_time;
 	int				stop;
 	int				waiting_last;
@@ -68,6 +67,7 @@ int					get_current_time(void);
 void				*monitor_routine(void *arg);
 void				cleanup(t_data *data);
 int					should_stop(t_data *data);
+void				print_message(t_data *data, int id, char *msg);
 
 /*****************************************************/
 

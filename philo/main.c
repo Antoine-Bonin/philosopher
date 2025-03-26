@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/12 18:28:26 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/20 23:17:41 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	init_philos(t_data *data)
 	data->start_time = get_current_time();
 	data->stop = 0;
 	data->waiting_last = 0;
-	data->nb_meal = 0;
 	i = 0;
 	while (i < data->nb_philo)
 	{
@@ -107,10 +106,7 @@ int	init_data(t_data *data)
 	pthread_join(data->monitor_thread, NULL);
 	i = 0;
 	while (i < data->nb_philo)
-	{
-		pthread_join(data->philos[i].thread, NULL);
-		i++;
-	}
+		pthread_join(data->philos[i++].thread, NULL);
 	return (0);
 }
 
