@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/20 23:22:43 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:34:15 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,13 @@ void *monitor_routine(void *arg)
         {
             current_time = get_current_time();
             pthread_mutex_lock(&data->update);
-            if (current_time - data->philos[i].last_meal > data->time_to_die) {
-                return (death_occured(data, i), NULL);
+            if ((current_time + 1)- data->philos[i].last_meal > data->time_to_die) 
+            {
+                death_occured(data, i);
+                return (NULL);
             }
-            if (data->nb_eat != -1 && data->philos[i].meal_eat >= data->nb_eat)
-                ate++;
-                
+            if (data->nb_eat != -1 && data->philos[i].meal_eat >= data->nb_eat- 1)
+                ate++;    
             pthread_mutex_unlock(&data->update);
             i++;
         }
@@ -61,10 +62,6 @@ void *monitor_routine(void *arg)
         {
             pthread_mutex_lock(&data->update);
             philo_ate(data);
-            pthread_mutex_lock(&data->print_mutex);
-            printf("All philosophers ate %d times\n", data->nb_eat);
-            pthread_mutex_unlock(&data->print_mutex);
-            
             return (NULL);
         }
         
