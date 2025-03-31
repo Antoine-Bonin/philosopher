@@ -31,3 +31,4 @@
 1202 1 has taken a fork
 1202 1 is eating
 All philosophers ate 3 times
+
