@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/20 19:46:34 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:22:36 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,25 @@ void	print_message(t_data *data, int id, char *msg)
 	pthread_mutex_lock(&data->print_mutex);
 	printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
 	pthread_mutex_unlock(&data->print_mutex);
+}
+
+void	cleanup(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	if (data->mutex_init == 1)
+		pthread_mutex_destroy(&data->update);
+	if (data->mutex_init == 2)
+		pthread_mutex_destroy(&data->is_dead);
+	if (data->mutex_init == 3)
+		pthread_mutex_destroy(&data->print_mutex);
+	free(data->philos);
+	free(data->forks);
+	free(data);
 }
