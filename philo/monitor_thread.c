@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/31 15:51:09 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:53:41 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,13 @@ void	death_occured(t_data *data, int i)
 void	philo_ate(t_data *data)
 {
 	pthread_mutex_unlock(&data->update);
+	usleep(1000);
 	pthread_mutex_lock(&data->is_dead);
 	data->stop = 1;
 	pthread_mutex_unlock(&data->is_dead);
 }
 
-void	check_death(t_data *data, int *i, int *ate)
+int	check_death(t_data *data, int *i, int *ate)
 {
 	long	current_time;
 
@@ -41,11 +42,12 @@ void	check_death(t_data *data, int *i, int *ate)
 	if (current_time - data->philos[*i].last_meal > data->time_to_die)
 	{
 		death_occured(data, *i);
-		return ;
+		return (1);
 	}
 	if (data->nb_eat != -1 && data->philos[*i].meal_eat >= data->nb_eat)
 		(*ate)++;
 	pthread_mutex_unlock(&data->update);
+	return (0);
 }
 
 void	*monitor_routine(void *arg)
@@ -55,22 +57,38 @@ void	*monitor_routine(void *arg)
 	int		ate;
 
 	data = (t_data *)arg;
-	usleep(1000);
 	while (!should_stop(data))
 	{
 		i = 0;
 		ate = 0;
 		while (i < data->nb_philo && !should_stop(data))
 		{
-			check_death(data, &i, &ate);
+			if (check_death(data, &i, &ate))
+				return (NULL);
 			i++;
 		}
 		if (data->nb_eat != -1 && ate == data->nb_philo)
 		{
 			pthread_mutex_lock(&data->update);
-			return (philo_ate(data), NULL);
+			philo_ate(data);
+			return (NULL);
 		}
-		usleep(1000);
 	}
 	return (NULL);
+}
+
+void	thinking(t_philo *philo)
+{
+	long	time_since_last_meal;
+	long	thinking_time;
+
+	pthread_mutex_lock(&philo->data->update);
+	time_since_last_meal = get_current_time() - philo->last_meal;
+	pthread_mutex_unlock(&philo->data->update);
+	thinking_time = (philo->data->time_to_die - philo->data->time_to_eat
+			- time_since_last_meal) / 2;
+	if (thinking_time > 0 && thinking_time < 50)
+		usleep(thinking_time * 1000);
+	else
+		usleep(1000);
 }

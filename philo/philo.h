@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/31 15:53:11 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/06/04 15:23:22 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void				*monitor_routine(void *arg);
 void				cleanup(t_data *data);
 int					should_stop(t_data *data);
 void				print_message(t_data *data, int id, char *msg);
+
+void				thinking(t_philo *philo);
 
 /*****************************************************/
 
