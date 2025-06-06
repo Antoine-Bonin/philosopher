@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/06 17:20:40 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/06/06 17:45:07 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,25 +86,11 @@ void	init_philos(t_data *data)
 	}
 }
 
-int	init_data_malloc(t_data *data)
-{
-	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
-	if (!data->philos)
-		return (1);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
-	if (!data->forks)
-		return (1);
-	data->forks_state = malloc(sizeof(int) * data->nb_philo);
-	if (!data->forks_state)
-		return (1);
-	return (0);
-}
-
 int	init_data(t_data *data)
 {
 	int	i;
 
-	if(init_data_malloc(data))
+	if (init_data_malloc(data))
 		return (1);
 	i = 0;
 	if (init_mutex(data))
