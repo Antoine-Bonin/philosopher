@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/03/31 15:53:26 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/06/06 17:20:40 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,8 @@ int	init_mutex(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+		if (pthread_mutex_init(&data->forks[i++], NULL) != 0)
 			return (1);
-		i++;
 	}
 	if (pthread_mutex_init(&data->update, NULL) != 0)
 		return (1);
@@ -57,6 +56,10 @@ int	init_mutex(t_data *data)
 		return (1);
 	else
 		data->mutex_init = 3;
+	if (pthread_mutex_init(&data->forks_mutex, NULL) != 0)
+		return (1);
+	else
+		data->mutex_init = 4;
 	return (0);
 }
 
@@ -78,19 +81,30 @@ void	init_philos(t_data *data)
 		data->philos[i].meal_eat = 0;
 		data->philos[i].is_eating = 0;
 		data->philos[i].wait = 0;
+		data->forks_state[i] = 0;
 		i++;
 	}
+}
+
+int	init_data_malloc(t_data *data)
+{
+	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
+	if (!data->philos)
+		return (1);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
+	if (!data->forks)
+		return (1);
+	data->forks_state = malloc(sizeof(int) * data->nb_philo);
+	if (!data->forks_state)
+		return (1);
+	return (0);
 }
 
 int	init_data(t_data *data)
 {
 	int	i;
 
-	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
-	if (!data->philos)
-		return (1);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
-	if (!data->forks)
+	if(init_data_malloc(data))
 		return (1);
 	i = 0;
 	if (init_mutex(data))
