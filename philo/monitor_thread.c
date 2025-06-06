@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/05 14:53:41 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/06/06 16:29:17 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	death_occured(t_data *data, int i)
 {
-	pthread_mutex_unlock(&data->update);
 	pthread_mutex_lock(&data->is_dead);
 	data->stop = 1;
 	pthread_mutex_unlock(&data->is_dead);
@@ -26,8 +25,7 @@ void	death_occured(t_data *data, int i)
 
 void	philo_ate(t_data *data)
 {
-	pthread_mutex_unlock(&data->update);
-	usleep(1000);
+	usleep(500);
 	pthread_mutex_lock(&data->is_dead);
 	data->stop = 1;
 	pthread_mutex_unlock(&data->is_dead);
@@ -36,17 +34,21 @@ void	philo_ate(t_data *data)
 int	check_death(t_data *data, int *i, int *ate)
 {
 	long	current_time;
+	long	last_meal;
+	int		meal_count;
 
 	pthread_mutex_lock(&data->update);
 	current_time = get_current_time();
-	if (current_time - data->philos[*i].last_meal > data->time_to_die)
+	last_meal = data->philos[*i].last_meal;
+	meal_count = data->philos[*i].meal_eat;
+	pthread_mutex_unlock(&data->update);
+	if (current_time - last_meal > data->time_to_die)
 	{
 		death_occured(data, *i);
 		return (1);
 	}
-	if (data->nb_eat != -1 && data->philos[*i].meal_eat >= data->nb_eat)
+	if (data->nb_eat != -1 && meal_count >= data->nb_eat)
 		(*ate)++;
-	pthread_mutex_unlock(&data->update);
 	return (0);
 }
 
@@ -57,6 +59,7 @@ void	*monitor_routine(void *arg)
 	int		ate;
 
 	data = (t_data *)arg;
+	usleep(1000);
 	while (!should_stop(data))
 	{
 		i = 0;
@@ -66,13 +69,12 @@ void	*monitor_routine(void *arg)
 			if (check_death(data, &i, &ate))
 				return (NULL);
 			i++;
+			if (data->nb_eat != -1 && ate == data->nb_philo)
+				break ;
 		}
 		if (data->nb_eat != -1 && ate == data->nb_philo)
-		{
-			pthread_mutex_lock(&data->update);
-			philo_ate(data);
-			return (NULL);
-		}
+			return (philo_ate(data), NULL);
+		usleep(1000);
 	}
 	return (NULL);
 }
