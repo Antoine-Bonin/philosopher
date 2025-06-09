@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/06 17:30:48 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:01:52 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	get_current_time(void)
 void	print_message(t_data *data, int id, char *msg)
 {
 	pthread_mutex_lock(&data->print_mutex);
-	if (data->stop)
+	if (should_stop(data))
 	{
 		pthread_mutex_unlock(&data->print_mutex);
 		return ;
