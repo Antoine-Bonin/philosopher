@@ -6,13 +6,13 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/06 17:45:07 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/07/04 18:02:57 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_data_arg(t_data *data, int ac, char **av)
+static int	init_data_arg(t_data *data, int ac, char **av)
 {
 	if (is_digit(av) == 1)
 		return (1);
@@ -34,11 +34,12 @@ int	init_data_arg(t_data *data, int ac, char **av)
 	return (0);
 }
 
-int	init_mutex(t_data *data)
+static int	init_mutex(t_data *data)
 {
 	int	i;
 
 	i = 0;
+	data->mutex_init = 0;
 	while (i < data->nb_philo)
 	{
 		if (pthread_mutex_init(&data->forks[i++], NULL) != 0)
@@ -46,24 +47,20 @@ int	init_mutex(t_data *data)
 	}
 	if (pthread_mutex_init(&data->update, NULL) != 0)
 		return (1);
-	else
-		data->mutex_init = 1;
+	data->mutex_init++;
 	if (pthread_mutex_init(&data->is_dead, NULL) != 0)
 		return (1);
-	else
-		data->mutex_init = 2;
+	data->mutex_init++;
 	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
 		return (1);
-	else
-		data->mutex_init = 3;
+	data->mutex_init++;
 	if (pthread_mutex_init(&data->forks_mutex, NULL) != 0)
 		return (1);
-	else
-		data->mutex_init = 4;
+	data->mutex_init++;
 	return (0);
 }
 
-void	init_philos(t_data *data)
+static void	init_philos(t_data *data)
 {
 	int	i;
 
@@ -86,7 +83,7 @@ void	init_philos(t_data *data)
 	}
 }
 
-int	init_data(t_data *data)
+static int	init_data(t_data *data)
 {
 	int	i;
 

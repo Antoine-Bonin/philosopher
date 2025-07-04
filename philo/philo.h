@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/06 17:45:42 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/07/04 18:07:38 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,8 @@ void				*monitor_routine(void *arg);
 /*********************forks**************************/
 
 int					forks_lock_two(t_philo *philo);
+void				ft_usleep(t_data *data, long time_in_ms);
+void				get_fork_order(t_philo *philo, pthread_mutex_t **first,
+						pthread_mutex_t **second);
 
 #endif

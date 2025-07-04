@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:41:50 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/06 17:46:28 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/07/04 18:01:29 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,17 @@ int	init_data_malloc(t_data *data)
 	if (!data->forks_state)
 		return (1);
 	return (0);
+}
+
+void	ft_usleep(t_data *data, long time_in_ms)
+{
+	long	start_time;
+
+	start_time = get_current_time();
+	while ((get_current_time() - start_time) < time_in_ms)
+	{
+		if (should_stop(data))
+			break ;
+		usleep(100);
+	}
 }

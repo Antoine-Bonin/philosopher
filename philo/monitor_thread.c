@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/06/06 16:29:17 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/07/04 18:09:31 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	death_occured(t_data *data, int i)
 
 void	philo_ate(t_data *data)
 {
-	usleep(500);
+	usleep(data->time_to_eat * 1000);
 	pthread_mutex_lock(&data->is_dead);
 	data->stop = 1;
 	pthread_mutex_unlock(&data->is_dead);
@@ -59,7 +59,7 @@ void	*monitor_routine(void *arg)
 	int		ate;
 
 	data = (t_data *)arg;
-	usleep(1000);
+	usleep(500);
 	while (!should_stop(data))
 	{
 		i = 0;
@@ -74,23 +74,7 @@ void	*monitor_routine(void *arg)
 		}
 		if (data->nb_eat != -1 && ate == data->nb_philo)
 			return (philo_ate(data), NULL);
-		usleep(1000);
+		usleep(500);
 	}
 	return (NULL);
-}
-
-void	thinking(t_philo *philo)
-{
-	long	time_since_last_meal;
-	long	thinking_time;
-
-	pthread_mutex_lock(&philo->data->update);
-	time_since_last_meal = get_current_time() - philo->last_meal;
-	pthread_mutex_unlock(&philo->data->update);
-	thinking_time = (philo->data->time_to_die - philo->data->time_to_eat
-			- time_since_last_meal) / 2;
-	if (thinking_time > 0 && thinking_time < 50)
-		usleep(thinking_time * 1000);
-	else
-		usleep(1000);
 }
