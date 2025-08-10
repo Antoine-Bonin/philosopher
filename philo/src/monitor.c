@@ -1,37 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   monitor_thread.c                                   :+:      :+:    :+:   */
+/*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/07/04 18:09:31 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/08/09 18:36:01 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
-void	death_occured(t_data *data, int i)
+static void	death_occured(t_data *data, int i)
 {
-	pthread_mutex_lock(&data->is_dead);
-	data->stop = 1;
-	pthread_mutex_unlock(&data->is_dead);
+	pthread_mutex_lock(&data->death_lock);
+	data->status = DEAD;
+	pthread_mutex_unlock(&data->death_lock);
 	pthread_mutex_lock(&data->print_mutex);
 	printf("%ld %d died\n", get_current_time() - data->start_time,
 		data->philos[i].id + 1);
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
-void	philo_ate(t_data *data)
+static void	philo_ate(t_data *data)
 {
-	usleep(data->time_to_eat * 1000);
-	pthread_mutex_lock(&data->is_dead);
-	data->stop = 1;
-	pthread_mutex_unlock(&data->is_dead);
+	pthread_mutex_lock(&data->death_lock);
+	data->status = FULL;
+	pthread_mutex_unlock(&data->death_lock);
 }
 
-int	check_death(t_data *data, int *i, int *ate)
+static int	check_death(t_data *data, int *i, int *ate)
 {
 	long	current_time;
 	long	last_meal;
@@ -59,7 +58,6 @@ void	*monitor_routine(void *arg)
 	int		ate;
 
 	data = (t_data *)arg;
-	usleep(500);
 	while (!should_stop(data))
 	{
 		i = 0;
@@ -74,7 +72,7 @@ void	*monitor_routine(void *arg)
 		}
 		if (data->nb_eat != -1 && ate == data->nb_philo)
 			return (philo_ate(data), NULL);
-		usleep(500);
+		smart_usleep(data, 1);
 	}
 	return (NULL);
 }

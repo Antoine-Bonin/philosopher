@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/07/04 18:07:38 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/08/10 16:49:43 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@
 # define EAT "is eating"
 # define SLEEP "is sleeping"
 # define THINK "is thinking"
-# define DEAD "died"
+# define MDEAD "died"
+
+typedef enum e_status
+{
+	ALIVE,
+	DEAD,
+	FULL,
+}					t_status;
 
 typedef struct s_philo
 {
@@ -33,10 +40,8 @@ typedef struct s_philo
 	int				wait;
 	int				meal_eat;
 	pthread_t		thread;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
+	int				forks[2];
 	struct s_data	*data;
-
 }					t_philo;
 
 typedef struct s_data
@@ -47,14 +52,14 @@ typedef struct s_data
 	int				time_to_die;
 	int				nb_eat;
 	long			start_time;
-	int				stop;
+	t_status		status;
 	int				waiting_last;
 	int				mutex_init;
 	int				*forks_state;
 	pthread_t		monitor_thread;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	update;
-	pthread_mutex_t	is_dead;
+	pthread_mutex_t	death_lock;
 	pthread_mutex_t	forks_mutex;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
@@ -65,22 +70,36 @@ typedef struct s_data
 int					is_digit(char **av);
 int					ft_atoi(char *str);
 int					get_current_time(void);
-void				cleanup(t_data *data);
 int					should_stop(t_data *data);
 void				print_message(t_data *data, int id, char *msg);
-int					init_data_malloc(t_data *data);
+t_status			get_status(t_data *data);
+void				smart_usleep(t_data *data, int duration);
+
+/**********************free****************************/
+
+void				garbage_data(t_data *data);
+void				cleanup(t_data *data);
+int					garbage_mutex(t_data *data);
+
+/*********************init data***********************/
+
+int					init_data(t_data *data);
+int					init_data_arg(t_data *data, int ac, char **av);
 
 /*********************thread**************************/
 
 void				*philo_routine(void *arg);
-void				thinking(t_philo *philo);
 void				*monitor_routine(void *arg);
 
-/*********************forks**************************/
+/**********************forks**************************/
 
-int					forks_lock_two(t_philo *philo);
-void				ft_usleep(t_data *data, long time_in_ms);
-void				get_fork_order(t_philo *philo, pthread_mutex_t **first,
-						pthread_mutex_t **second);
-
+void				release_forks_ordered(t_philo *philo);
+int					lock_second_fork(t_philo *philo, int first_fork,
+						int second_fork);
+int					lock_first_fork(t_philo *philo, int first_fork,
+						int second_fork);
+void				release_forks_state(t_philo *philo, int first_fork,
+						int second_fork);
+int					check_forks_availability(t_philo *philo, int first_fork,
+						int second_fork);
 #endif

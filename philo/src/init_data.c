@@ -1,18 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   init_data.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/07/04 18:02:57 by antbonin         ###   ########.fr       */
+/*   Created: 2025/07/31 13:46:50 by antbonin          #+#    #+#             */
+/*   Updated: 2025/08/09 18:50:31 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
-static int	init_data_arg(t_data *data, int ac, char **av)
+static int	init_data_malloc(t_data *data)
+{
+	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
+	if (!data->philos)
+		return (1);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
+	if (!data->forks)
+	{
+		free(data->philos);
+		data->philos = NULL;
+		return (1);
+	}
+	data->forks_state = malloc(sizeof(int) * data->nb_philo);
+	if (!data->forks_state)
+	{
+		free(data->philos);
+		free(data->forks);
+		data->philos = NULL;
+		data->forks = NULL;
+		return (1);
+	}
+	return (0);
+}
+
+int	init_data_arg(t_data *data, int ac, char **av)
 {
 	if (is_digit(av) == 1)
 		return (1);
@@ -31,6 +55,8 @@ static int	init_data_arg(t_data *data, int ac, char **av)
 	}
 	else
 		data->nb_eat = -1;
+	if (init_data_malloc(data))
+		return (1);
 	return (0);
 }
 
@@ -42,21 +68,22 @@ static int	init_mutex(t_data *data)
 	data->mutex_init = 0;
 	while (i < data->nb_philo)
 	{
-		if (pthread_mutex_init(&data->forks[i++], NULL) != 0)
-			return (1);
+		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+			return (garbage_mutex(data));
+		i++;
 	}
 	if (pthread_mutex_init(&data->update, NULL) != 0)
-		return (1);
-	data->mutex_init++;
-	if (pthread_mutex_init(&data->is_dead, NULL) != 0)
-		return (1);
-	data->mutex_init++;
+		return (garbage_mutex(data));
+	data->mutex_init = 1;
+	if (pthread_mutex_init(&data->death_lock, NULL) != 0)
+		return (garbage_mutex(data));
+	data->mutex_init = 2;
 	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
-		return (1);
-	data->mutex_init++;
+		return (garbage_mutex(data));
+	data->mutex_init = 3;
 	if (pthread_mutex_init(&data->forks_mutex, NULL) != 0)
-		return (1);
-	data->mutex_init++;
+		return (garbage_mutex(data));
+	data->mutex_init = 4;
 	return (0);
 }
 
@@ -65,14 +92,14 @@ static void	init_philos(t_data *data)
 	int	i;
 
 	data->start_time = get_current_time();
-	data->stop = 0;
+	data->status = ALIVE;
 	data->waiting_last = 0;
 	i = 0;
 	while (i < data->nb_philo)
 	{
 		data->philos[i].id = i;
-		data->philos[i].r_fork = &data->forks[i];
-		data->philos[i].l_fork = &data->forks[(i + 1) % data->nb_philo];
+		data->philos[i].forks[0] = i;
+		data->philos[i].forks[1] = (i + 1) % data->nb_philo;
 		data->philos[i].data = data;
 		data->philos[i].last_meal = data->start_time;
 		data->philos[i].meal_eat = 0;
@@ -83,16 +110,14 @@ static void	init_philos(t_data *data)
 	}
 }
 
-static int	init_data(t_data *data)
+int	init_data(t_data *data)
 {
 	int	i;
 
-	if (init_data_malloc(data))
-		return (1);
-	i = 0;
 	if (init_mutex(data))
 		return (1);
 	init_philos(data);
+	i = 0;
 	while (i < data->nb_philo)
 	{
 		pthread_create(&data->philos[i].thread, NULL, philo_routine,
@@ -104,34 +129,5 @@ static int	init_data(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 		pthread_join(data->philos[i++].thread, NULL);
-	return (0);
-}
-
-int	main(int ac, char **av)
-{
-	t_data	*data;
-
-	data = malloc(sizeof(t_data));
-	if (!data)
-		return (1);
-	if (ac != 5 && ac != 6)
-	{
-		printf("Error: wrong number of arguments\n");
-		free(data);
-		return (1);
-	}
-	if (init_data_arg(data, ac, av))
-	{
-		if (data->nb_philo != 1)
-			printf("Error: wrong arguments\n");
-		return (free(data), 1);
-	}
-	if (init_data(data))
-	{
-		printf("Error: init data\n");
-		free(data);
-		return (1);
-	}
-	cleanup(data);
 	return (0);
 }

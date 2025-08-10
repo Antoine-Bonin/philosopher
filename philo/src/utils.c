@@ -6,11 +6,11 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/07/04 18:02:32 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/08/10 17:44:05 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 int	is_digit(char **av)
 {
@@ -67,35 +67,36 @@ int	get_current_time(void)
 void	print_message(t_data *data, int id, char *msg)
 {
 	pthread_mutex_lock(&data->print_mutex);
-	if (should_stop(data))
+	if (get_status(data) == ALIVE)
 	{
+		printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
 		pthread_mutex_unlock(&data->print_mutex);
 		return ;
 	}
-	printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
-void	cleanup(t_data *data)
+void	smart_usleep(t_data *data, int duration)
 {
-	int	i;
+	long	start_time;
+	long	current_time;
+	long	elapsed;
 
-	i = 0;
-	while (i < data->nb_philo)
+	start_time = get_current_time();
+	while (1)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
-		i++;
+		if (should_stop(data))
+		{
+			printf("DEBUG: smart_usleep détecte arrêt!\n");
+			return ;
+		}
+		current_time = get_current_time();
+		elapsed = current_time - start_time;
+		if (elapsed >= (long)duration)
+			break ;
+		if (duration - elapsed > 10)
+			usleep(1000);
+		else
+			usleep(100);
 	}
-	if (data->mutex_init >= 1)
-		pthread_mutex_destroy(&data->update);
-	if (data->mutex_init >= 2)
-		pthread_mutex_destroy(&data->is_dead);
-	if (data->mutex_init >= 3)
-		pthread_mutex_destroy(&data->print_mutex);
-	if (data->mutex_init >= 4)
-		pthread_mutex_destroy(&data->forks_mutex);
-	free(data->philos);
-	free(data->forks);
-	free(data->forks_state);
-	free(data);
 }

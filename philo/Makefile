@@ -4,24 +4,27 @@ NAME = philo
 OBJDIR = objects
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3
-LDFLAGS = -pthread
+CFLAGS = -Wall -Wextra -Werror -g3 
+LDFLAGS = -pthread 
 
-SRCS = main.c \
-		utils.c \
-		thread.c \
-		monitor_thread.c \
-		fork_lock_two.c \
-		utils_two.c \
+SRCS = src/main.c \
+		src/utils.c \
+		src/utils_two.c \
+		src/routine.c \
+		src/monitor.c \
+		src/init_data.c \
+		src/free.c \
+		src/fork.c \
 
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^
 
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(OBJDIR):
