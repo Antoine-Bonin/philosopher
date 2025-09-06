@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:18:27 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/03 15:08:59 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/06 15:35:44 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,12 @@ void	*philo_routine(void *arg)
 	philo = (t_philo *)arg;
 	data = philo->data;
 	if (philo->id % 2)
+	{
+		print_message(data, philo->id, THINK);
 		smart_usleep(data, data->time_to_eat);
+	}
+	else
+		print_message(data, philo->id, THINK);
 	pthread_mutex_lock(&data->update);
 	philo->last_meal = get_current_time();
 	pthread_mutex_unlock(&data->update);
