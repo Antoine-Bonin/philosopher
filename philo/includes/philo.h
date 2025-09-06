@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/10 16:49:43 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/06 16:50:38 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,11 @@ void				*monitor_routine(void *arg);
 /**********************forks**************************/
 
 void				release_forks_ordered(t_philo *philo);
-int					lock_second_fork(t_philo *philo, int first_fork,
+int					lock_second_fork(t_philo *philo,
 						int second_fork);
-int					lock_first_fork(t_philo *philo, int first_fork,
-						int second_fork);
-void				release_forks_state(t_philo *philo, int first_fork,
-						int second_fork);
+int					lock_first_fork(t_philo *philo, int first_fork);
+// void				release_forks_state(t_philo *philo, int first_fork,
+// 						int second_fork);
 int					check_forks_availability(t_philo *philo, int first_fork,
 						int second_fork);
 #endif
