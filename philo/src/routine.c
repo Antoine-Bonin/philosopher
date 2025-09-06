@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:18:27 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/10 17:41:10 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/03 15:08:59 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,20 @@ static int	take_forks_ordered(t_philo *philo)
 
 static void	sleep_then_think(t_data *data, t_philo *philo)
 {
+	static int	count = 0;
+
 	if (get_status(data) != ALIVE)
 		return ;
 	print_message(data, philo->id, SLEEP);
 	smart_usleep(data, data->time_to_sleep);
 	print_message(data, philo->id, THINK);
-	smart_usleep(data, 1 / 2);
+	if (data->nb_philo % 2 == 0 && count < 1)
+	{
+		smart_usleep(data, 1);
+		count++;
+	}
+	else if (data->nb_philo % 2 != 0)
+		smart_usleep(data, data->time_to_eat);
 }
 
 static void	handle_routine(t_data *data, t_philo *philo)
@@ -92,7 +100,7 @@ void	*philo_routine(void *arg)
 	philo = (t_philo *)arg;
 	data = philo->data;
 	if (philo->id % 2)
-		usleep(data->time_to_eat * 100);
+		smart_usleep(data, data->time_to_eat);
 	pthread_mutex_lock(&data->update);
 	philo->last_meal = get_current_time();
 	pthread_mutex_unlock(&data->update);

@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/10 17:44:05 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/03 15:03:34 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,8 @@ void	print_message(t_data *data, int id, char *msg)
 {
 	pthread_mutex_lock(&data->print_mutex);
 	if (get_status(data) == ALIVE)
-	{
-		printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1, msg);
-		pthread_mutex_unlock(&data->print_mutex);
-		return ;
-	}
+		printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1,
+			msg);
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
@@ -86,10 +83,7 @@ void	smart_usleep(t_data *data, int duration)
 	while (1)
 	{
 		if (should_stop(data))
-		{
-			printf("DEBUG: smart_usleep détecte arrêt!\n");
-			return ;
-		}
+			break ;
 		current_time = get_current_time();
 		elapsed = current_time - start_time;
 		if (elapsed >= (long)duration)

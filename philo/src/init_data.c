@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:46:50 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/09 18:50:31 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/02 21:54:55 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,9 @@ int	init_data(t_data *data)
 	pthread_join(data->monitor_thread, NULL);
 	i = 0;
 	while (i < data->nb_philo)
-		pthread_join(data->philos[i++].thread, NULL);
+	{
+		pthread_join(data->philos[i].thread, NULL);
+		i++;
+	}
 	return (0);
 }

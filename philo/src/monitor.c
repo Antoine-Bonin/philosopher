@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/09 18:36:01 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/03 14:08:04 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ void	*monitor_routine(void *arg)
 		}
 		if (data->nb_eat != -1 && ate == data->nb_philo)
 			return (philo_ate(data), NULL);
-		smart_usleep(data, 1);
 	}
 	return (NULL);
 }

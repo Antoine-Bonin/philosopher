@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 18:52:32 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/09 18:52:51 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/02 22:00:32 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ void	cleanup(t_data *data)
 		free(data->philos);
 	if (data->forks)
 		free(data->forks);
+	if (data->forks_state)
+		free(data->forks_state);
 	free(data);
 }
 

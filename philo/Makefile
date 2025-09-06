@@ -4,16 +4,16 @@ NAME = philo
 OBJDIR = objects
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 
+CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -pthread 
 
 SRCS = src/main.c \
 		src/utils.c \
-		src/utils_two.c \
+		src/get_status_death.c \
 		src/routine.c \
 		src/monitor.c \
 		src/init_data.c \
-		src/free.c \
+		src/cleanup.c \
 		src/fork.c \
 
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
