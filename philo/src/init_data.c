@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:46:50 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/02 21:54:55 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/08 15:23:02 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,6 @@ static int	init_mutex(t_data *data)
 	if (pthread_mutex_init(&data->print_mutex, NULL) != 0)
 		return (garbage_mutex(data));
 	data->mutex_init = 3;
-	if (pthread_mutex_init(&data->forks_mutex, NULL) != 0)
-		return (garbage_mutex(data));
-	data->mutex_init = 4;
 	return (0);
 }
 

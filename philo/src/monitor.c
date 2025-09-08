@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/06 17:06:47 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/08 15:57:32 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	check_death(t_data *data, int *i, int *ate)
 	last_meal = data->philos[*i].last_meal;
 	meal_count = data->philos[*i].meal_eat;
 	pthread_mutex_unlock(&data->update);
-	if (current_time - last_meal >= data->time_to_die)
+	if (current_time - last_meal > data->time_to_die)
 	{
 		death_occured(data, *i);
 		return (1);
