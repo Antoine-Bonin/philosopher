@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:18:27 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/08 16:00:30 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/08 16:06:53 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static void	handle_routine(t_data *data, t_philo *philo)
 		}
 		if (!take_forks_ordered(philo))
 		{
-			usleep(300);
+			usleep(100);
 			continue ;
 		}
 		philo->is_eating = 1;
