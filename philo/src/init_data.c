@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:46:50 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/08 15:23:02 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/09 14:05:19 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ static void	init_philos(t_data *data)
 
 	data->start_time = get_current_time();
 	data->status = ALIVE;
-	data->waiting_last = 0;
 	i = 0;
 	while (i < data->nb_philo)
 	{

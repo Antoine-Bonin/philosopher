@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/06 16:50:38 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/09 14:32:41 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,12 @@ typedef struct s_data
 	int				nb_eat;
 	long			start_time;
 	t_status		status;
-	int				waiting_last;
 	int				mutex_init;
 	int				*forks_state;
 	pthread_t		monitor_thread;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	update;
 	pthread_mutex_t	death_lock;
-	pthread_mutex_t	forks_mutex;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
 }					t_data;
@@ -97,8 +95,4 @@ void				release_forks_ordered(t_philo *philo);
 int					lock_second_fork(t_philo *philo,
 						int second_fork);
 int					lock_first_fork(t_philo *philo, int first_fork);
-// void				release_forks_state(t_philo *philo, int first_fork,
-// 						int second_fork);
-int					check_forks_availability(t_philo *philo, int first_fork,
-						int second_fork);
 #endif

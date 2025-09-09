@@ -4,8 +4,8 @@ NAME = philo
 OBJDIR = objects
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
-LDFLAGS = -pthread 
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -pthread
+LDFLAGS = -pthread
 
 SRCS = src/main.c \
 		src/utils.c \
@@ -17,15 +17,18 @@ SRCS = src/main.c \
 		src/fork.c \
 
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
+DEPS = $(OBJS:.o=.d)
 
-all: $(NAME)
+all: $(NAME) includes/philo.h
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) 
 	$(CC) $(LDFLAGS) -o $@ $^
 
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+-include $(DEPS)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
