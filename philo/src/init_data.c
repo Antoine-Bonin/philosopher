@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:46:50 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/09 14:05:19 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/23 18:09:04 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,9 @@ int	init_data(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		pthread_create(&data->philos[i].thread, NULL, philo_routine,
-			(void *)&data->philos[i]);
+		if (pthread_create(&data->philos[i].thread, NULL,
+				philo_routine, (void *)&data->philos[i]) != 0)
+			return (clean_thread(data, i));
 		i++;
 	}
 	pthread_create(&data->monitor_thread, NULL, monitor_routine, (void *)data);

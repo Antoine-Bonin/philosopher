@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/09 14:32:41 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/23 18:09:31 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,12 @@ void				print_message(t_data *data, int id, char *msg);
 t_status			get_status(t_data *data);
 void				smart_usleep(t_data *data, int duration);
 
-/**********************free****************************/
+/**********************cleanup****************************/
 
 void				garbage_data(t_data *data);
 void				cleanup(t_data *data);
 int					garbage_mutex(t_data *data);
+int					clean_thread(t_data *data, int i);
 
 /*********************init data***********************/
 
@@ -92,7 +93,6 @@ void				*monitor_routine(void *arg);
 /**********************forks**************************/
 
 void				release_forks_ordered(t_philo *philo);
-int					lock_second_fork(t_philo *philo,
-						int second_fork);
+int					lock_second_fork(t_philo *philo, int second_fork);
 int					lock_first_fork(t_philo *philo, int first_fork);
 #endif
