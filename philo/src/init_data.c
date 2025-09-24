@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:46:50 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/23 18:09:04 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:36:06 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 static int	init_data_malloc(t_data *data)
 {
-	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
+	data->philos = (t_philo *)malloc(sizeof(t_philo) * data->nb_philo);
 	if (!data->philos)
 		return (1);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
+	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->nb_philo);
 	if (!data->forks)
 	{
 		free(data->philos);
 		data->philos = NULL;
 		return (1);
 	}
-	data->forks_state = malloc(sizeof(int) * data->nb_philo);
+	data->forks_state = (int *)malloc(sizeof(int) * data->nb_philo);
 	if (!data->forks_state)
 	{
 		free(data->philos);
@@ -121,7 +121,8 @@ int	init_data(t_data *data)
 			return (clean_thread(data, i));
 		i++;
 	}
-	pthread_create(&data->monitor_thread, NULL, monitor_routine, (void *)data);
+	if (pthread_create(&data->monitor_thread, NULL, monitor_routine, (void *)data) != 0)
+		return (clean_thread(data, i));
 	pthread_join(data->monitor_thread, NULL);
 	i = 0;
 	while (i < data->nb_philo)

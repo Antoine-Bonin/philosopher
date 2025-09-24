@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/08/10 16:44:44 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:31:43 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	print_and_free(t_data *data)
 
 static int	init_data_malloc(t_data **data)
 {
-	*data = malloc(sizeof(t_data));
+	*data = (t_data *)malloc(sizeof(t_data));
 	if (!*data)
 		return (1);
 	(*data)->philos = NULL;
