@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 14:17:55 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 16:11:39 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,16 @@ int	get_current_time(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-void	print_message(t_data_table *data, int id, char *msg)
+void	print_message(t_data_table *table, int id, char *msg)
 {
-	pthread_mutex_lock(&data->print_mutex);
-	if (get_status(data) == ALIVE)
-		printf("%ld %d %s\n", get_current_time() - data->start_time, id + 1,
+	pthread_mutex_lock(&table->print_mutex);
+	if (get_status(table) == ALIVE)
+		printf("%ld %d %s\n", get_current_time() - table->start_time, id + 1,
 			msg);
-	pthread_mutex_unlock(&data->print_mutex);
+	pthread_mutex_unlock(&table->print_mutex);
 }
 
-void	smart_usleep(t_data_table *data, int duration)
+void	smart_usleep(t_data_table *table, int duration)
 {
 	long	start_time;
 	long	current_time;
@@ -82,7 +82,7 @@ void	smart_usleep(t_data_table *data, int duration)
 	start_time = get_current_time();
 	while (1)
 	{
-		if (should_stop(data))
+		if (should_stop(table))
 			break ;
 		current_time = get_current_time();
 		elapsed = current_time - start_time;

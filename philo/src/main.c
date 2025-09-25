@@ -6,55 +6,55 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:23:25 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 14:21:20 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 16:11:53 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-static void	print_and_free(t_data_table *data)
+static void	print_and_free(t_data_table *table)
 {
 	printf("Error: init data\n");
-	garbage_data(data);
+	garbage_data(table);
 }
 
-static int	init_data_table_malloc(t_data_table **data)
+static int	init_data_table_malloc(t_data_table **table)
 {
-	*data = (t_data_table *)malloc(sizeof(t_data_table));
-	if (!*data)
+	*table = (t_data_table *)malloc(sizeof(t_data_table));
+	if (!*table)
 		return (1);
-	(*data)->philos = NULL;
-	(*data)->forks = NULL;
-	(*data)->forks_state = NULL;
-	(*data)->mutex_init = 0;
+	(*table)->philos = NULL;
+	(*table)->forks = NULL;
+	(*table)->forks_state = NULL;
+	(*table)->mutex_init = 0;
 	return (0);
 }
 
 int	main(int ac, char **av)
 {
-	t_data_table	*data;
+	t_data_table	*table;
 
-	data = NULL;
-	if (init_data_table_malloc(&data))
+	table = NULL;
+	if (init_data_table_malloc(&table))
 		return (1);
 	if (ac != 5 && ac != 6)
 	{
 		printf("Error: wrong number of arguments\n");
-		free(data);
+		free(table);
 		return (1);
 	}
-	if (init_data_table_arg(data, ac, av))
+	if (init_data_table_arg(table, ac, av))
 	{
-		if (data->nb_philo != 1)
+		if (table->nb_philo != 1)
 			printf("Error: wrong arguments\n");
-		garbage_data(data);
+		garbage_data(table);
 		return (1);
 	}
-	if (init_table(data))
+	if (init_table(table))
 	{
-		print_and_free(data);
+		print_and_free(table);
 		return (1);
 	}
-	clean_exit(data);
+	clean_exit(table);
 	return (0);
 }

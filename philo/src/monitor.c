@@ -6,73 +6,73 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 14:17:55 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 16:16:51 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-static void	death_occured(t_data_table *data, int i)
+static void	death_occured(t_data_table *table, int i)
 {
-	pthread_mutex_lock(&data->death_lock);
-	data->status = DEAD;
-	pthread_mutex_unlock(&data->death_lock);
-	pthread_mutex_lock(&data->print_mutex);
-	printf("%ld %d died\n", get_current_time() - data->start_time,
-		data->philos[i].id + 1);
-	pthread_mutex_unlock(&data->print_mutex);
+	pthread_mutex_lock(&table->death_lock);
+	table->status = DEAD;
+	pthread_mutex_unlock(&table->death_lock);
+	pthread_mutex_lock(&table->print_mutex);
+	printf("%ld %d died\n", get_current_time() - table->start_time,
+		table->philos[i].id + 1);
+	pthread_mutex_unlock(&table->print_mutex);
 }
 
-static void	philo_ate(t_data_table *data)
+static void	philo_ate(t_data_table *table)
 {
-	pthread_mutex_lock(&data->death_lock);
-	data->status = FULL;
-	pthread_mutex_unlock(&data->death_lock);
+	pthread_mutex_lock(&table->death_lock);
+	table->status = FULL;
+	pthread_mutex_unlock(&table->death_lock);
 }
 
-static int	check_death(t_data_table *data, int *i, int *ate)
+static int	check_death(t_data_table *table, int *i, int *ate)
 {
 	long	current_time;
 	long	last_meal;
 	int		meal_count;
 
-	pthread_mutex_lock(&data->update);
+	pthread_mutex_lock(&table->update);
 	current_time = get_current_time();
-	last_meal = data->philos[*i].last_meal;
-	meal_count = data->philos[*i].meal_eat;
-	pthread_mutex_unlock(&data->update);
-	if (current_time - last_meal > data->time_to_die)
+	last_meal = table->philos[*i].last_meal;
+	meal_count = table->philos[*i].meal_eat;
+	pthread_mutex_unlock(&table->update);
+	if (current_time - last_meal > table->time_to_die)
 	{
-		death_occured(data, *i);
+		death_occured(table, *i);
 		return (1);
 	}
-	if (data->nb_eat != -1 && meal_count >= data->nb_eat)
+	if (table->nb_eat != -1 && meal_count >= table->nb_eat)
 		(*ate)++;
 	return (0);
 }
 
 void	*monitor_routine(void *arg)
 {
-	t_data_table	*data;
-	int		i;
-	int		ate;
+	t_data_table	*table;
+	int				i;
+	int				ate;
 
-	data = (t_data_table *)arg;
-	while (!should_stop(data))
+	table = (t_data_table *)arg;
+	while (!should_stop(table))
 	{
 		i = 0;
 		ate = 0;
-		while (i < data->nb_philo && !should_stop(data))
+		while (i < table->nb_philo && !should_stop(table))
 		{
-			if (check_death(data, &i, &ate))
+			if (check_death(table, &i, &ate))
 				return (NULL);
 			i++;
-			if (data->nb_eat != -1 && ate == data->nb_philo)
+			if (table->nb_eat != -1 && ate == table->nb_philo)
 				break ;
 		}
-		if (data->nb_eat != -1 && ate == data->nb_philo)
+		if (table->nb_eat != -1 && ate == table->nb_philo)
 		{
-			philo_ate(data);
+			philo_ate(table);
 			return (NULL);
 		}
 		usleep(300);

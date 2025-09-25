@@ -1,84 +1,84 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean_exit.c                                          :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 18:52:32 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 14:18:34 by antbonin         ###   ########.fr       */
+/*   Created: 2025/09/25 16:17:14 by antbonin          #+#    #+#             */
+/*   Updated: 2025/09/25 16:17:18 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void	clean_exit(t_data_table *data)
+void	clean_exit(t_data_table *table)
 {
 	int	i;
 
 	i = 0;
-	while (i < data->nb_philo)
+	while (i < table->nb_philo)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&table->forks[i]);
 		i++;
 	}
-	if (data->mutex_init >= 1)
-		pthread_mutex_destroy(&data->update);
-	if (data->mutex_init >= 2)
-		pthread_mutex_destroy(&data->death_lock);
-	if (data->mutex_init >= 3)
-		pthread_mutex_destroy(&data->print_mutex);
-	garbage_data(data);
+	if (table->mutex_init >= 1)
+		pthread_mutex_destroy(&table->update);
+	if (table->mutex_init >= 2)
+		pthread_mutex_destroy(&table->death_lock);
+	if (table->mutex_init >= 3)
+		pthread_mutex_destroy(&table->print_mutex);
+	garbage_data(table);
 }
 
-void	garbage_data(t_data_table *data)
+void	garbage_data(t_data_table *table)
 {
-	if (data->philos)
-		free(data->philos);
-	if (data->forks)
-		free(data->forks);
-	if (data->forks_state)
-		free(data->forks_state);
-	free(data);
+	if (table->philos)
+		free(table->philos);
+	if (table->forks)
+		free(table->forks);
+	if (table->forks_state)
+		free(table->forks_state);
+	free(table);
 }
 
-int	garbage_mutex(t_data_table *data)
+int	garbage_mutex(t_data_table *table)
 {
 	int	i;
 
-	if (data->mutex_init >= 3)
-		pthread_mutex_destroy(&data->print_mutex);
-	if (data->mutex_init >= 2)
-		pthread_mutex_destroy(&data->death_lock);
-	if (data->mutex_init >= 1)
-		pthread_mutex_destroy(&data->update);
+	if (table->mutex_init >= 3)
+		pthread_mutex_destroy(&table->print_mutex);
+	if (table->mutex_init >= 2)
+		pthread_mutex_destroy(&table->death_lock);
+	if (table->mutex_init >= 1)
+		pthread_mutex_destroy(&table->update);
 	i = 0;
-	while (i < data->nb_philo && data->mutex_init > 0)
-		pthread_mutex_destroy(&data->forks[i++]);
+	while (i < table->nb_philo && table->mutex_init > 0)
+		pthread_mutex_destroy(&table->forks[i++]);
 	return (1);
 }
 
-int	clean_thread(t_data_table *data, int i)
+int	clean_thread(t_data_table *table, int i)
 {
 	int	j;
 
-	data->status = DEAD;
+	table->status = DEAD;
 	j = 0;
 	while (j < i)
 	{
-		pthread_join(data->philos[j].thread, NULL);
+		pthread_join(table->philos[j].thread, NULL);
 		j++;
 	}
-	if (data->mutex_init >= 3)
-		pthread_mutex_destroy(&data->print_mutex);
-	if (data->mutex_init >= 2)
-		pthread_mutex_destroy(&data->death_lock);
-	if (data->mutex_init >= 1)
-		pthread_mutex_destroy(&data->update);
+	if (table->mutex_init >= 3)
+		pthread_mutex_destroy(&table->print_mutex);
+	if (table->mutex_init >= 2)
+		pthread_mutex_destroy(&table->death_lock);
+	if (table->mutex_init >= 1)
+		pthread_mutex_destroy(&table->update);
 	j = 0;
-	while (j < data->nb_philo && data->mutex_init > 0)
+	while (j < table->nb_philo && table->mutex_init > 0)
 	{
-		pthread_mutex_destroy(&data->forks[j]);
+		pthread_mutex_destroy(&table->forks[j]);
 		j++;
 	}
 	return (1);

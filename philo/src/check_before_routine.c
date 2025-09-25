@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_status_death.c                                 :+:      :+:    :+:   */
+/*   check_before_routine.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 17:20:00 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 16:11:39 by antbonin         ###   ########.fr       */
+/*   Created: 2025/09/25 15:13:21 by antbonin          #+#    #+#             */
+/*   Updated: 2025/09/25 16:10:13 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-t_status	get_status(t_data_table *table)
-{
-	t_status	status_value;
+// void	*philo_routine(void *arg)
+// {
+// 	t_philo			*philo;
+// 	t_data_table	*table;
 
-	pthread_mutex_lock(&table->death_lock);
-	status_value = table->status;
-	pthread_mutex_unlock(&table->death_lock);
-	return (status_value);
-}
-
-int	should_stop(t_data_table *table)
-{
-	return (get_status(table) != ALIVE);
-}
+// 	philo = (t_philo *)arg;
+// 	table = philo->table;
+// 	philo->last_meal = get_current_time();
+// 	if (philo->id % 2 != 0)
+// 	{
+// 		print_message(table, philo->id, THINK);
+// 		smart_usleep(table, table->time_to_eat / 2);
+// 	}
+// 	else
+// 		print_message(table, philo->id, THINK);
+// 	handle_routine(table, philo);
+// 	return (NULL);
+// }
