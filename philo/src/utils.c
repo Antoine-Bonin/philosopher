@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:29:22 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/08 15:32:39 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:17:55 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	get_current_time(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-void	print_message(t_data *data, int id, char *msg)
+void	print_message(t_data_table *data, int id, char *msg)
 {
 	pthread_mutex_lock(&data->print_mutex);
 	if (get_status(data) == ALIVE)
@@ -73,7 +73,7 @@ void	print_message(t_data *data, int id, char *msg)
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
-void	smart_usleep(t_data *data, int duration)
+void	smart_usleep(t_data_table *data, int duration)
 {
 	long	start_time;
 	long	current_time;

@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 18:18:27 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/08 16:06:53 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:17:55 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	take_forks_ordered(t_philo *philo)
 	return (lock_fork_order(philo, first, second));
 }
 
-static void	sleep_then_think(t_data *data, t_philo *philo)
+static void	sleep_then_think(t_data_table *data, t_philo *philo)
 {
 	if (get_status(data) != ALIVE)
 		return ;
@@ -59,7 +59,7 @@ static void	sleep_then_think(t_data *data, t_philo *philo)
 		smart_usleep(data, data->time_to_eat);
 }
 
-static void	handle_routine(t_data *data, t_philo *philo)
+static void	handle_routine(t_data_table *data, t_philo *philo)
 {
 	while (get_status(data) == ALIVE)
 	{
@@ -90,7 +90,7 @@ static void	handle_routine(t_data *data, t_philo *philo)
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
-	t_data	*data;
+	t_data_table	*data;
 
 	philo = (t_philo *)arg;
 	data = philo->data;

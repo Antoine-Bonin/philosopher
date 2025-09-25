@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_data.c                                        :+:      :+:    :+:   */
+/*   init_data_table.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "../includes/philo.h"
 
-static int	init_data_malloc(t_data *data)
+static int	init_data_table_malloc(t_data_table *data)
 {
 	data->philos = (t_philo *)malloc(sizeof(t_philo) * data->nb_philo);
 	if (!data->philos)
@@ -36,7 +36,7 @@ static int	init_data_malloc(t_data *data)
 	return (0);
 }
 
-int	init_data_arg(t_data *data, int ac, char **av)
+int	init_data_table_arg(t_data_table *data, int ac, char **av)
 {
 	if (is_digit(av) == 1)
 		return (1);
@@ -55,12 +55,12 @@ int	init_data_arg(t_data *data, int ac, char **av)
 	}
 	else
 		data->nb_eat = -1;
-	if (init_data_malloc(data))
+	if (init_data_table_malloc(data))
 		return (1);
 	return (0);
 }
 
-static int	init_mutex(t_data *data)
+static int	init_mutex(t_data_table *data)
 {
 	int	i;
 
@@ -84,7 +84,7 @@ static int	init_mutex(t_data *data)
 	return (0);
 }
 
-static void	init_philos(t_data *data)
+static void	init_philos(t_data_table *data)
 {
 	int	i;
 
@@ -106,7 +106,7 @@ static void	init_philos(t_data *data)
 	}
 }
 
-int	init_data(t_data *data)
+int	init_table(t_data_table *data)
 {
 	int	i;
 

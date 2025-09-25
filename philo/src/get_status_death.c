@@ -6,13 +6,13 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 17:20:00 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/02 22:00:29 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:17:55 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-t_status	get_status(t_data *data)
+t_status	get_status(t_data_table *data)
 {
 	t_status	status_value;
 
@@ -22,7 +22,7 @@ t_status	get_status(t_data *data)
 	return (status_value);
 }
 
-int	should_stop(t_data *data)
+int	should_stop(t_data_table *data)
 {
 	return (get_status(data) != ALIVE);
 }

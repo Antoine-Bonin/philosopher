@@ -6,13 +6,13 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 16:36:35 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/23 18:04:16 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:17:55 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-static void	death_occured(t_data *data, int i)
+static void	death_occured(t_data_table *data, int i)
 {
 	pthread_mutex_lock(&data->death_lock);
 	data->status = DEAD;
@@ -23,14 +23,14 @@ static void	death_occured(t_data *data, int i)
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
-static void	philo_ate(t_data *data)
+static void	philo_ate(t_data_table *data)
 {
 	pthread_mutex_lock(&data->death_lock);
 	data->status = FULL;
 	pthread_mutex_unlock(&data->death_lock);
 }
 
-static int	check_death(t_data *data, int *i, int *ate)
+static int	check_death(t_data_table *data, int *i, int *ate)
 {
 	long	current_time;
 	long	last_meal;
@@ -53,11 +53,11 @@ static int	check_death(t_data *data, int *i, int *ate)
 
 void	*monitor_routine(void *arg)
 {
-	t_data	*data;
+	t_data_table	*data;
 	int		i;
 	int		ate;
 
-	data = (t_data *)arg;
+	data = (t_data_table *)arg;
 	while (!should_stop(data))
 	{
 		i = 0;

@@ -12,7 +12,7 @@ SRCS = src/main.c \
 		src/get_status_death.c \
 		src/routine.c \
 		src/monitor.c \
-		src/init_data.c \
+		src/init_data_table.c \
 		src/cleanup.c \
 		src/fork.c \
 
