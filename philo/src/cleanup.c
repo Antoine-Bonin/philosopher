@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:17:14 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 16:17:18 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/25 18:56:30 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	clean_exit(t_data_table *table)
 		pthread_mutex_destroy(&table->death_lock);
 	if (table->mutex_init >= 3)
 		pthread_mutex_destroy(&table->print_mutex);
+	if (table->mutex_init >= 4)
+		pthread_mutex_destroy(&table->wait_thread_create);
 	garbage_data(table);
 }
 
@@ -46,6 +48,8 @@ int	garbage_mutex(t_data_table *table)
 {
 	int	i;
 
+	if (table->mutex_init >= 4)
+		pthread_mutex_destroy(&table->wait_thread_create);
 	if (table->mutex_init >= 3)
 		pthread_mutex_destroy(&table->print_mutex);
 	if (table->mutex_init >= 2)
@@ -64,11 +68,14 @@ int	clean_thread(t_data_table *table, int i)
 
 	table->status = DEAD;
 	j = 0;
+	pthread_mutex_unlock(&table->wait_thread_create);
 	while (j < i)
 	{
 		pthread_join(table->philos[j].thread, NULL);
 		j++;
 	}
+	if (table->mutex_init >= 4)
+		pthread_mutex_destroy(&table->wait_thread_create);
 	if (table->mutex_init >= 3)
 		pthread_mutex_destroy(&table->print_mutex);
 	if (table->mutex_init >= 2)

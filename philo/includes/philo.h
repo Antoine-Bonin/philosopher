@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:52:33 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 16:16:41 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:01:05 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ typedef struct s_data_table
 	pthread_mutex_t		print_mutex;
 	pthread_mutex_t		update;
 	pthread_mutex_t		death_lock;
-	t_philo				*philos;
 	pthread_mutex_t		*forks;
+	pthread_mutex_t		wait_thread_create;
+	t_philo				*philos;
 }						t_data_table;
 
 /**********************utils**************************/
@@ -93,6 +94,7 @@ void					*monitor_routine(void *arg);
 
 /**********************forks**************************/
 
+int						check_fork_availability(t_philo *philo, int fork_id);
 void					release_forks_ordered(t_philo *philo);
 int						lock_second_fork(t_philo *philo, int second_fork);
 int						lock_first_fork(t_philo *philo, int first_fork);

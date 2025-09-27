@@ -6,7 +6,7 @@
 /*   By: antbonin <antbonin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 16:17:02 by antbonin          #+#    #+#             */
-/*   Updated: 2025/09/25 16:17:04 by antbonin         ###   ########.fr       */
+/*   Updated: 2025/09/27 15:13:10 by antbonin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,9 @@ static int	init_mutex(t_data_table *table)
 	if (pthread_mutex_init(&table->print_mutex, NULL) != 0)
 		return (garbage_mutex(table));
 	table->mutex_init = 3;
+	if (pthread_mutex_init(&table->wait_thread_create, NULL) != 0)
+		return (garbage_mutex(table));
+	table->mutex_init = 4;
 	return (0);
 }
 
@@ -114,6 +117,7 @@ int	init_table(t_data_table *table)
 	if (init_mutex(table))
 		return (1);
 	init_philos(table);
+	pthread_mutex_lock(&table->wait_thread_create);
 	i = 0;
 	while (i < table->nb_philo)
 	{
@@ -125,12 +129,10 @@ int	init_table(t_data_table *table)
 	if (pthread_create(&table->monitor_thread, NULL, monitor_routine,
 			(void *)table) != 0)
 		return (clean_thread(table, i));
+	pthread_mutex_unlock(&table->wait_thread_create);
 	pthread_join(table->monitor_thread, NULL);
-	i = 0;
-	while (i < table->nb_philo)
-	{
+	i = -1;
+	while (++i < table->nb_philo)
 		pthread_join(table->philos[i].thread, NULL);
-		i++;
-	}
 	return (0);
 }
